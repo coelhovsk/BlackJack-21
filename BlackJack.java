@@ -141,12 +141,22 @@ public class BlackJack {
                     continue; // passa para o próximo jogador
                 }
                 
+                String compraString = null; //declarando variavel para usar no do{
+                boolean compra = false; //declarando variavel para usar no do{
+                int gambiarraDoDiabo = 1; //gambiarra pro loop do do{ funcionar de modo simples
+                do { // criado sem um else pois isso gastaria mais "memória"
                 System.out.println("-------------------------------");
                 System.out.println(jogador + ", suas cartas atuais são: " + cartasJogador); // mostra cartas atuais
-                System.out.println(jogador + ", deseja comprar? (true/false)");
+                System.out.println(jogador + ", deseja comprar?");
                 System.out.println("-------------------------------");
-
-                boolean compra = SC.nextBoolean(); // precisa ser trocado para string, SIM/NAO S/N Y/N T/F .upper
+                compraString = SC.next().toUpperCase();
+                    if ((compraString.charAt(0) == 'S' || compraString.charAt(0) == 'Y') && compraString.length() <= 3) {
+                        compra = true;//caso a palavra se assemelhe com sim ou yes
+                    } else if ((compraString.charAt(0) != 'N' && compraString.length() <= 3) || compraString.length() > 3) {
+                        System.out.println(COR_VERMELHA + "Apenas diga sim ou não" + RESETAR_COR);
+                        gambiarraDoDiabo = 0; //caso a palavra não se assemelhe com nada 
+                    }
+                } while (gambiarraDoDiabo == 0);
                 Thread.sleep(500);
 
                 //#region COMPRAR CARTAS

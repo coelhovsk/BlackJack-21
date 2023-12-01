@@ -56,7 +56,7 @@ public class BlackJack {
         if (numeroDoJogador == 1) {
             SC.nextLine(); // a primeira leitura não está funcionando, se tirar essa linha vai quebrar o codigo.
         }
-        System.out.println("Nome do jogador"+numeroDoJogador+" : ");
+        System.out.println("Nome do jogador "+numeroDoJogador+": ");
         String nome = SC.nextLine();
         return nome;
     }

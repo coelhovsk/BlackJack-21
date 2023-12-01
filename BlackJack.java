@@ -1,6 +1,10 @@
 import java.util.*;
 
 public class BlackJack {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     //#region Iniciando SCANNER,RANDOM,JogadoresAtivos, quantidadeJogadores
     public static int jogadoresDesativados = 0; // Definindo variaveis globais para maior facilidade de acesso.
@@ -42,14 +46,14 @@ public class BlackJack {
         distribuirCartas(cartasDosJogadores, baralho, as);
 
         // Enquanto algum jogador estiver ativo, permite a compra de cartas
-        while (algumJogadorAtivo(cartasDosJogadores)) {
+        while (true) {
             comprarCartas(cartasDosJogadores, baralho, as);
         }
     }
     
     public static String nomeDoJogador(int numeroDoJogador){
         if (numeroDoJogador == 1) {
-            String nome = SC.nextLine(); // a primeira leitura não está funcionando, se tirar essa linha vai quebrar o codigo.
+            SC.nextLine(); // a primeira leitura não está funcionando, se tirar essa linha vai quebrar o codigo.
         }
         System.out.println("Nome do jogador"+numeroDoJogador+": ");
         String nome = SC.nextLine();
@@ -57,24 +61,39 @@ public class BlackJack {
     }
 
     // Método para verificar a soma das cartas e condição de Blackjack
-    public static void verificarSomaEBlackjack(String jogador, ArrayList<Integer> cartasJogador, int as) throws InterruptedException {
+    public static void verificarSomaEBlackjack(String jogador, ArrayList<Integer> cartasJogador, int as, HashMap<String, ArrayList<Integer>> cartasDosJogadores) throws InterruptedException {
         int somaCartas = calcularSomaCartas(cartasJogador, as);
-
+        
         if (somaCartas > 21) {
-            System.out.println(jogador + " perdeu!");
+            System.out.println(ANSI_RED+ jogador +" perdeu!"+ANSI_RESET);
             cartasJogador.clear();
             jogadoresDesativados++;
             // comentar  dps ///////////////////////////////////// 
-            checarDesativados(jogador);
+            checarDesativados(proximoJogador(cartasDosJogadores, jogador));
         } else if (somaCartas == 21) {
-            finalizarJogo(jogador, cartasJogador);
+            finalizarJogo(proximoJogador(cartasDosJogadores, jogador), cartasJogador);
         }
+    }
+    public static String proximoJogador(HashMap<String, ArrayList<Integer>> cartasDosJogadores, String jogador){
+        String proxJogador = null;
+        int ping = 0;
+        for(String jogadores: cartasDosJogadores.keySet()){
+            if(jogador.equals(jogadores)){
+                ping = 1;
+                continue;
+            }
+            else if (ping == 1){
+                proxJogador = jogadores;
+                break;
+            }
+        }
+        return proxJogador;
     }
     
     public static void checarDesativados(String jogador) {
             if (jogadoresDesativados == quantidadeJogadores - 1) {
                 System.out.println("-------------------------------");
-                System.out.println(jogador + " é o último jogador restante e ganhou!");
+                System.out.println(ANSI_GREEN+jogador +" é o último jogador restante e ganhou!"+ANSI_RESET);
                 System.out.println("Fim do jogo.");
                 System.exit(0);
             }
@@ -104,15 +123,14 @@ public class BlackJack {
                 aryListCartasJogador.add(carta);
             }
 
-            verificarSomaEBlackjack(jogador, aryListCartasJogador, as);
+            verificarSomaEBlackjack(proximoJogador(jogadoresCartas, jogador), aryListCartasJogador, as, jogadoresCartas);
             System.out.println(jogador + ", suas cartas iniciais são: " + aryListCartasJogador);
         }
     }
 
     // Método para permitir que os jogadores comprem cartas
     public static void comprarCartas(HashMap<String, ArrayList<Integer>> cartasDosJogadores, int[] baralho, int as) throws InterruptedException {
-        while (algumJogadorAtivo(cartasDosJogadores)) {
-            
+        while (true) {
             for (String jogador : cartasDosJogadores.keySet()) {
                 ArrayList<Integer> cartasJogador = cartasDosJogadores.get(jogador);
 
@@ -150,7 +168,7 @@ public class BlackJack {
 
 
                     //////////////////// comentar dps
-                    verificarSomaEBlackjack(jogador, cartasJogador, as);
+                    verificarSomaEBlackjack(jogador, cartasJogador, as, cartasDosJogadores);
                     ////////////////////
                     
                     System.out.println("-------------------------------");
@@ -179,27 +197,17 @@ public class BlackJack {
     // Método para encerrar o programa quando um jogador vence
     public static void finalizarJogo(String jogador, ArrayList<Integer> cartasJogador)throws InterruptedException {
         System.out.println("-------------------------------");
-        if (verificarBlackjack(cartasJogador)) {
-            System.out.println(jogador + " venceu com um Blackjack!");
-        } else {
-            System.out.println(jogador + " venceu!");
+        if (verificarBlackjack(cartasJogador)) { // Verifica se o jogador fez BJ a partir do metodo verificarBlackJack
+            System.out.println(ANSI_GREEN+jogador + " venceu com um Blackjack!"+ANSI_RESET);
+        } else { // caso não tenha feito printa uma mensagem de venceu normal.
+            System.out.println(ANSI_GREEN+jogador + " venceu!"+ANSI_RESET);
         }
         System.out.println("Fim do jogo.");
         Thread.sleep(500);
         System.exit(0); // Encerra o programa
     }
 
-    // Método para verificar se algum jogador está ativo
-    public static boolean algumJogadorAtivo(HashMap<String, ArrayList<Integer>> cartasDosJogadores) {
-        for (ArrayList<Integer> cartas : cartasDosJogadores.values()) {
-            if (!cartas.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // #region DEFININDO BARALHO
+    // #region SETANDO BARALHO
     public static int[] baralho(int[] baralho) {
 
         for (int i = 0; i < baralho.length; i++) {
@@ -213,7 +221,7 @@ public class BlackJack {
     }
     // #endregion
 
-    // #region DEFINIR VALOR DO ÁS
+    // #region DEFININDO O VALOR DO ÁS
     public static int valorDoAs() {
         int n = 0;
         do {
@@ -225,7 +233,7 @@ public class BlackJack {
     }
     // #endregion
 
-    // #region QUANTIDADE DE JOGADORES
+    // #region DEFININDO QUANTIDADE DE JOGADORES
     public static int quantidadeJogadores() throws InterruptedException{
         int quantidade = 0;
         System.out.println("-------------------------------");

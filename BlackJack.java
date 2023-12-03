@@ -217,14 +217,31 @@ public class BlackJack {
      * @param cartasDosJogadores
      */
     public static void todosPassaram(HashMap<String, ArrayList<Integer>> cartasDosJogadores) {
-        
-
         HashMap<String, Integer> somaDosPlayer = new HashMap<>();
         for (String chave : cartasDosJogadores.keySet()) {
             ArrayList<Integer> maoDoPlayer = cartasDosJogadores.get(chave);
             somaDosPlayer.put(chave,  calcularSomaCartas(maoDoPlayer)); // Adicionar a lista clonada ao HashMap clonado
         }
-        // pegar String da chave do player que ganhou
+        ArrayList<String> vencedor = new ArrayList<String>(); // crio uma listo contendo qm vai ganhar
+        int maior = 0;
+        vencedor.add(null); // adiciono uma casa nula na lista pois vai ser removida
+        for (String chave : somaDosPlayer.keySet()) {
+            if(somaDosPlayer.get(chave) > maior){ // verifico se o atual é maior que o maior visto
+                maior = somaDosPlayer.get(chave); // se for, o maior muda
+                vencedor.add(chave);              // o nome do maior valor vai pra lista
+                vencedor.remove(0);         // retiro o nome anterior da lista
+            }else if(somaDosPlayer.get(chave) == maior){ // se o valor for igual ao do maior (empate)
+                vencedor.add(chave);              // adiciono ele na lista também
+            }
+        }
+
+        // para o caso de ter jogadores que não possuem o maior valor na lista
+        for (int i = 0; i < vencedor.size(); i++) {
+            if(somaDosPlayer.get(vencedor.get(i)) != maior){ // vejo se ele não se encaixa
+                vencedor.remove(i);                          // e então tiro ele
+            }
+        }
+        
         // pegar as cartas do player que ganhou cartaDosJogadores.get("jogador")
         // finalizarJogo(String jogador, ArrayList<Integer> cartasJogador)
         // dps eu faço um metodo para empate (coelhovsk)

@@ -161,6 +161,7 @@ public class BlackJack {
 
                 //#region COMPRAR CARTAS
                 // faz basicamente a mesma coisa que o distribuir
+                int passou = 0; //qtd de pessoas que passam
                 if (compra) { // se a compra for "sim"
                     int comprado = 0;
                     do {
@@ -186,6 +187,12 @@ public class BlackJack {
                     ////////////////////
                     
                     System.out.println("-------------------------------");
+                    
+                }else{
+                    passou++;
+                }
+
+                if(passou == cartasDosJogadores.size()){ //verifico se todo mundo passou
                     
                 }
             }

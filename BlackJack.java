@@ -152,6 +152,7 @@ public class BlackJack {
                 compraString = SC.next().toUpperCase();
                     if ((compraString.charAt(0) == 'S' || compraString.charAt(0) == 'Y') && compraString.length() <= 3) {
                         compra = true;//caso a palavra se assemelhe com sim ou yes
+                        gambiarraDoDiabo = 1;
                     } else if ((compraString.charAt(0) != 'N' && compraString.length() <= 3) || compraString.length() > 3) {
                         System.out.println(COR_VERMELHA + "Apenas diga sim ou não" + RESETAR_COR);
                         gambiarraDoDiabo = 0; //caso a palavra não se assemelhe com nada 

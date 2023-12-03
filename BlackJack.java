@@ -5,6 +5,7 @@ public class BlackJack {
     public static final String RESETAR_COR = "\u001B[0m";
     public static final String COR_VERMELHA = "\u001B[31m";
     public static final String COR_VERDE = "\u001B[32m";
+    public static final String COR_AMARELA = "\u001B[33m";
     // #endregion
 
     // #region Iniciando SCANNER,RANDOM,JogadoresAtivos, quantidadeJogadores
@@ -81,7 +82,7 @@ public class BlackJack {
                 // comentar dps /////////////////////////////////////
                 checarDesativados(proximoJogador(cartasDosJogadores, jogador));
             } else if (somaCartas == 21) {
-                finalizarJogo(proximoJogador(cartasDosJogadores, jogador), cartasJogador);
+                finalizarJogo(jogador, cartasJogador);
             }
         }
 
@@ -201,7 +202,7 @@ public class BlackJack {
                     ////////////////////
 
                     System.out.println("-------------------------------");
-
+                    qtdJogadoresPassaram = 0;
                 } else {
                     qtdJogadoresPassaram++;
                     if(qtdJogadoresPassaram == (quantidadeJogadores-jogadoresDesativados)){
@@ -242,12 +243,14 @@ public class BlackJack {
             }
         }
         
-        // pegar as cartas do player que ganhou cartaDosJogadores.get("jogador")
-        // finalizarJogo(String jogador, ArrayList<Integer> cartasJogador)
-        // dps eu faço um metodo para empate (coelhovsk)
+        if(vencedor.size() == 1){
+            finalizarJogo(vencedor.get(0), cartasDosJogadores.get(vencedor.get(0)));
+        }else{
+            empate(vencedor);
+        }
     }
 
-    // método para calcular a soma das cartas de um jogador
+    // Método para calcular a soma das cartas de um jogador
     public static int calcularSomaCartas(ArrayList<Integer> cartasJogador) {
         int soma = 0;
         for (int carta : cartasJogador) {
@@ -262,14 +265,29 @@ public class BlackJack {
         return soma;
     }
 
-    // metodo para verificar se um jogador venceu com Blackjack
+    // Método para verificar se um jogador venceu com Blackjack
     public static boolean verificarBlackjack(ArrayList<Integer> cartasJogador) { // verifica se a quantidade de cartas é
                                                                                  // 2 ( mão de saída )
         return (cartasJogador.size() == 2 && calcularSomaCartas(cartasJogador) == 21);
     }
-
+    
+    // Método quando dá empate, encerra o programa quando acontece
+    public static void empate(ArrayList<String> vencedores){
+        System.out.println("-------------------------------");
+        for (int i = 0; i < vencedores.size(); i++) {
+            if(i == 0){
+                System.out.printf("%sOs jogadores %s", COR_AMARELA, vencedores.get(i));
+            }else if(i == vencedores.size() - 1){
+                System.out.printf(" e %s empataram\n%s",vencedores.get(i), RESETAR_COR);
+            }else{
+                System.out.printf(", %s",vencedores.get(i));
+            }
+        }
+        System.out.println("Fim do jogo.");
+        System.exit(0); // Encerra o programa
+    }
     // Método para encerrar o programa quando um jogador vence
-    public static void finalizarJogo(String jogador, ArrayList<Integer> cartasJogador) throws InterruptedException {
+    public static void finalizarJogo(String jogador, ArrayList<Integer> cartasJogador) {
         System.out.println("-------------------------------");
         if (verificarBlackjack(cartasJogador)) { // Verifica se o jogador fez BJ a partir do metodo verificarBlackJack
             System.out.println(jogador + ", suas cartas iniciais são: " + cartasJogador);
@@ -278,7 +296,6 @@ public class BlackJack {
             System.out.println(COR_VERDE + jogador + " venceu!" + RESETAR_COR);
         }
         System.out.println("Fim do jogo.");
-        Thread.sleep(500);
         System.exit(0); // Encerra o programa
     }
 

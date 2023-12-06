@@ -1,3 +1,9 @@
+/*
+ * 06/12/2023
+ * HENRIQUE COELHO DOS SANTOS | coelhovsk2007@gmail.com
+ * ARTHUR GAMBA BORBA | arthurborba271@gmail.com
+ */
+
 import java.util.*;
 
 public class BlackJack {
@@ -28,7 +34,6 @@ public class BlackJack {
         quantidadeJogadores = quantidadeJogadores();
 
         // HashMap para armazenar as cartas de cada jogador, onde a chave é o jogador
-        // "Jogador%d"
         HashMap<String, ArrayList<Integer>> cartasDosJogadores = new HashMap<>();
 
         // Inicializa o HashMap com os jogadores | a chave é o nome do jogador "nome" e
